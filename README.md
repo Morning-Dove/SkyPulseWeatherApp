@@ -1,6 +1,8 @@
 # SkyPulse
 ## Overview
 
+To view this site through GitHub Pages click this link: https://morning-dove.github.io/SkyPulseWeatherApp/
+
 I have built a basic weather application that uses the weather.gov API, found here: 
 [https://www.weather.gov/documentation/services-web-api] Links to an external site.
 
