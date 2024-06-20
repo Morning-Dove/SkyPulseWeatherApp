@@ -2,7 +2,9 @@
 ## Overview
 
 I have built a basic weather application that uses the weather.gov API, found here: 
-[https://www.weather.gov/documentation/services-web-apiLinks to an external site.](https://www.weather.gov/documentation/services-web-api). 
+[https://www.weather.gov/documentation/services-web-api] 
+Links to an external site.
+(https://www.weather.gov/documentation/services-web-api). 
 It has these pages and sections:
 
 * Home
