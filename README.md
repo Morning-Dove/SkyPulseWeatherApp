@@ -1,7 +1,9 @@
 # SkyPulse
 ## Overview
 
-I have built a basic weather application that uses the weather.gov API, found here: [https://www.weather.gov/documentation/services-web-apiLinks to an external site.](https://www.weather.gov/documentation/services-web-api). It has these pages and sections:
+I have built a basic weather application that uses the weather.gov API, found here: 
+[https://www.weather.gov/documentation/services-web-apiLinks to an external site.](https://www.weather.gov/documentation/services-web-api). 
+It has these pages and sections:
 
 * Home
     * Modal with a form to sign in (doesn't do anything yet)
@@ -15,7 +17,7 @@ I have built a basic weather application that uses the weather.gov API, found he
         * Current weather conditions
         * Current weather alerts (e.g. Excessive Heat Warning)
         * A card that displays the weather over the next 24 hours
-            * Use a line chart from Chart.js: https://www.chartjs.org/docs/latest/samples/line/line.html
+        * Uses a line chart from Chart.js: https://www.chartjs.org/docs/latest/samples/line/line.html
 * About
     * Has a simple description of who I am and why I made this site.
 * FAQ
