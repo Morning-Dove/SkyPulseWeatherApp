@@ -1,6 +1,7 @@
 "use strict"
 // Dixie Tech College Coordinates 37.105045,-113.564835
 
+const currentWeather = await getForecast();
 
 // fetch weather alerts
 const getWeatherAlerts = async () => {
@@ -25,58 +26,42 @@ const getForecast = async () => {
 // Display current weather in box1 - references back to getForecast
 document.addEventListener("DOMContentLoaded", async () => {
     const displayWeather = async () => {
+        const todaysWeather = currentWeather["properties"]["periods"][0]
         const currentWeatherOutput = document.getElementsByClassName("box1")[0];
 
-        const currentWeather = await getForecast();
         if (!currentWeather) {
             currentWeatherOutput.innerHTML = "Failed to load current weather data.";
             return;
         }
 
-        let shortForecast = currentWeather["properties"]["periods"][0]["shortForecast"];
+        let shortForecast = todaysWeather["shortForecast"];
         const imageContainer = document.getElementById('weather-icon');
 
         imageContainer.innerHTML = '';
+        const img = document.createElement('img');
+        img.width = 80;
+        img.height = 80; 
 
         if (shortForecast.includes("Sunny") || shortForecast.includes("Clear")) {
-            const img = document.createElement('img');
             img.src = 'photos/sunny.png';
             img.alt = 'Sun';
-            img.width = 80;
-            img.height = 80; 
-            imageContainer.appendChild(img);
         } else if (shortForecast.includes("Cloudy")) {
-            const img = document.createElement('img');
             img.src = 'photos/cloudy.png';
             img.alt = 'Cloud';
-            img.width = 80;
-            img.height = 80; 
-            imageContainer.appendChild(img);
         } else if (shortForecast.includes("Showers") || shortForecast === "Rain") {
-            const img = document.createElement('img');
             img.src = 'photos/rainy.png';
             img.alt = 'Rain Cloud';
-            img.width = 80;
-            img.height = 80; 
-            imageContainer.appendChild(img);
-        } else if (shortForecast.includes("Thunder") || shortForecast.includes("Lightening")) {
-            const img = document.createElement('img');
+        } else if (shortForecast.includes("Thunder") || shortForecast.includes("Lightning")) {
             img.src = 'photos/thunderstorm.png';
-            img.alt = 'cloud with lightening and rain';
-            img.width = 80;
-            img.height = 80; 
-            imageContainer.appendChild(img);
+            img.alt = 'cloud with lightning and rain';
         } else if (shortForecast.includes("Windy") || shortForecast.includes("Wind")) {
-            const img = document.createElement('img');
             img.src = 'photos/windy.png';
             img.alt = 'wind graphic with cloud';
-            img.width = 80;
-            img.height = 80; 
-            imageContainer.appendChild(img);
         }
         
+        imageContainer.appendChild(img);        
 
-        let weather = currentWeather["properties"]["periods"][0]["detailedForecast"];
+        let weather = todaysWeather["detailedForecast"];
         console.log(`Current Weather Conditions: ${weather}`);
         document.getElementById("weather-condition").innerHTML = `${weather}`;
 
@@ -86,14 +71,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Display current weather alerts in box1 number 3 - references back to getForecast
     const displayForecast = async () => {
         const currentForecast = document.getElementsByClassName("box1")[1];
+        const todaysWeather = currentWeather["properties"]["periods"][1];
 
-        const forecast = await getForecast();
-        if (!forecast) {
+        if (!currentWeather) {
             currentForecast.innerHTML = "Failed to load current weather alerts.";
             return;
         }
 
-        let weather = forecast["properties"]["periods"][1]["detailedForecast"];
+        let weather = todaysWeather["detailedForecast"];
         console.log(`Current Weather Conditions: ${weather}`);
         document.getElementById("weather-condition2").innerHTML = `${weather}`;
 
@@ -102,6 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Display current weather alerts in box1 number 2 - references back to getWeatherAlerts
     const displayWeatherAlerts = async () => {
+        const todaysWeatherAlerts = weatherAlerts["features"][0]["properties"]
         const currentweatherAlerts = document.getElementsByClassName("box1")[2];
 
         const weatherAlerts = await getWeatherAlerts();
@@ -113,8 +99,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById("weather-condition3").innerHTML = '<font color="#0a5562">No weather alerts at this time.</font>';
             return "No alerts at this time."
         }
-        let alerts = weatherAlerts["features"][0]["properties"]["headline"];
-        let alertExpire = weatherAlerts["features"][0]["properties"]["parameters"]["NWSheadline"];
+
+        let alerts = todaysWeatherAlerts["headline"];
+        let alertExpire = todaysWeatherAlerts["parameters"]["NWSheadline"];
         // let alertInstructions = weatherAlerts["features"][0]["properties"]["instruction"];
         
 
@@ -136,15 +123,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // gets daily temperatures for a week using getForecast will display the temperatures on the line graph
     const getDailyTemperatures = async () => {
-        const currentTemp = await getForecast();
         let dayTemperatures = [];
+        todaysWeather = currentWeather["properties"]["periods"][i];
 
-        for (let i = 0; i < currentTemp["properties"]["periods"].length; i++){
-            if (currentTemp["properties"]["periods"][i]["isDaytime"] === true){
-                dayTemperatures.push(currentTemp["properties"]["periods"][i]["temperature"]);
-                console.log(currentTemp["properties"]["periods"][i]["temperature"]);
-        };
-        };
+        for (let i = 0; i < todaysWeather.length; i++) {
+            if (todaysWeather["isDaytime"] === true){
+                dayTemperatures.push(todaysWeather["temperature"]);
+                console.log(todaysWeather["temperature"]);
+            }
+        }
 
         console.log(dayTemperatures);
         return dayTemperatures;
@@ -153,15 +140,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // gets nightly temperatures for a week using getForecast will display the temperatures on the line graph
     const getNightlyTemperatures = async () => {
-        const currentTemp = await getForecast();
         let nightTemperatures = [];
+        const todaysWeather = currentWeather["properties"]["periods"];
 
-        for (let i = 0; i < currentTemp["properties"]["periods"].length; i++){
-            if (currentTemp["properties"]["periods"][i]["isDaytime"] === false){
-                nightTemperatures.push(currentTemp["properties"]["periods"][i]["temperature"]);
-                console.log(currentTemp["properties"]["periods"][i]["temperature"]);
-        };
-        };
+        for (let i = 0; i < todaysWeather.length; i++) {
+            if (todaysWeather[i]["isDaytime"] === false){
+                nightTemperatures.push(todaysWeather[i]["temperature"]);
+                console.log(todaysWeather[i]["temperature"]);
+            }
+        }
 
         console.log(nightTemperatures);
         return nightTemperatures;
@@ -173,30 +160,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     new Chart(ctx, {
     type: 'line',
     data: {
-        labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        datasets: [{
-        label: 'Day Time Temperature',
-        data: await getDailyTemperatures(),
-        borderWidth: 1,
-        borderColor: 'cadetblue',
-        backgroundColor: 'rgb(112, 185, 188)',
-        },
-        {
-            label: 'Night Time Temperature',
-            data: await getNightlyTemperatures(),
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [{
+            label: 'Day Time Temperature',
+            data: await getDailyTemperatures(),
             borderWidth: 1,
-            borderColor: '#000',
-            backgroundColor: '#000',
+            borderColor: 'cadetblue',
+            backgroundColor: 'rgb(112, 185, 188)',
+            },
+            {
+                label: 'Night Time Temperature',
+                data: await getNightlyTemperatures(),
+                borderWidth: 1,
+                borderColor: '#000',
+                backgroundColor: '#000',
+            },
+            ]
         },
-        ]
-    },
-    options: {
-        scales: {
-        y: {
-            beginAtZero: true
+        options: {
+            scales: {
+            y: {
+                beginAtZero: true
+            }
+            }
         }
-        }
-    }
     });
 
 });
