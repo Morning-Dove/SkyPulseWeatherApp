@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
 
-// Display current weather alerts in box1 number 2 - references back to getWeatherAlerts
+    // Display current weather alerts in box1 number 2 - references back to getWeatherAlerts
     const displayWeatherAlerts = async () => {
         const weatherAlerts = await getWeatherAlerts();
         const todaysWeatherAlerts = weatherAlerts["features"][0]["properties"]
@@ -103,11 +103,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         let alerts = todaysWeatherAlerts["headline"];
         let alertExpire = todaysWeatherAlerts["parameters"]["NWSheadline"];
-        // let alertInstructions = weatherAlerts["features"][0]["properties"]["instruction"];
         
-
         document.getElementById("weather-condition3").innerHTML = `${alerts}`
-        // document.getElementById("weather-instructions3").innerHTML = `${alertInstructions}`
         document.getElementById("alert-expiration").innerHTML = `${alertExpire}`
         
 
@@ -170,6 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
 
+    // Display chart from chartjs.org
     const ctx = document.getElementById('weather-chart');
 
     Chart.defaults.color = '#FFF';
