@@ -1,7 +1,6 @@
 "use strict"
 // Dixie Tech College Coordinates 37.105045,-113.564835
 
-const currentWeather = await getForecast();
 
 // fetch weather alerts
 const getWeatherAlerts = async () => {
@@ -26,6 +25,7 @@ const getForecast = async () => {
 // Display current weather in box1 - references back to getForecast
 document.addEventListener("DOMContentLoaded", async () => {
     const displayWeather = async () => {
+        const currentWeather = await getForecast();
         const todaysWeather = currentWeather["properties"]["periods"][0]
         const currentWeatherOutput = document.getElementsByClassName("box1")[0];
 
@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Display current weather alerts in box1 number 3 - references back to getForecast
     const displayForecast = async () => {
         const currentForecast = document.getElementsByClassName("box1")[1];
+        const currentWeather = await getForecast();
         const todaysWeather = currentWeather["properties"]["periods"][1];
 
         if (!currentWeather) {
@@ -87,10 +88,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Display current weather alerts in box1 number 2 - references back to getWeatherAlerts
     const displayWeatherAlerts = async () => {
+        const weatherAlerts = await getWeatherAlerts();
         const todaysWeatherAlerts = weatherAlerts["features"][0]["properties"]
         const currentweatherAlerts = document.getElementsByClassName("box1")[2];
 
-        const weatherAlerts = await getWeatherAlerts();
         if (!weatherAlerts) {
             currentweatherAlerts.innerHTML = "Failed to load current weather alerts.";
             return;
@@ -116,20 +117,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     displayWeather();
     displayForecast();
     displayWeatherAlerts();
-        
-
-    const ctx = document.getElementById('weather-chart');
 
 
     // gets daily temperatures for a week using getForecast will display the temperatures on the line graph
     const getDailyTemperatures = async () => {
         let dayTemperatures = [];
-        todaysWeather = currentWeather["properties"]["periods"][i];
+        const currentWeather = await getForecast();
+        const todaysWeather = currentWeather["properties"]["periods"];
 
         for (let i = 0; i < todaysWeather.length; i++) {
-            if (todaysWeather["isDaytime"] === true){
-                dayTemperatures.push(todaysWeather["temperature"]);
-                console.log(todaysWeather["temperature"]);
+            if (todaysWeather[i]["isDaytime"] === true){
+                dayTemperatures.push(todaysWeather[i]["temperature"]);
+                console.log(todaysWeather[i]["temperature"]);
             }
         }
 
@@ -141,26 +140,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     // gets nightly temperatures for a week using getForecast will display the temperatures on the line graph
     const getNightlyTemperatures = async () => {
         let nightTemperatures = [];
+        const currentWeather = await getForecast();
         const todaysWeather = currentWeather["properties"]["periods"];
 
         for (let i = 0; i < todaysWeather.length; i++) {
             if (todaysWeather[i]["isDaytime"] === false){
                 nightTemperatures.push(todaysWeather[i]["temperature"]);
+
                 console.log(todaysWeather[i]["temperature"]);
             }
         }
-
-        console.log(nightTemperatures);
         return nightTemperatures;
     };
 
+    // gets the date from weather.gov to be displayed at the bottom of the chart on the x-axis
+    const getTemperatureDate = async () => {
+        let TemperaturesDate = [];
+        const currentWeather = await getForecast();
+        const todaysWeather = currentWeather["properties"]["periods"];
+
+        for (let i = 0; i < todaysWeather.length; i++) {
+            if (todaysWeather[i]["isDaytime"] === false){
+                let temperatureDate = todaysWeather[i]["startTime"];
+                let date = temperatureDate.slice(0, 10);
+                TemperaturesDate.push(date);
+            }
+        }
+        return TemperaturesDate;
+    };
+
+
+    const ctx = document.getElementById('weather-chart');
 
     Chart.defaults.color = '#FFF';
     Chart.defaults.borderColor = '#8e8d8d';
     new Chart(ctx, {
     type: 'line',
     data: {
-            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            labels: await getTemperatureDate(),
             datasets: [{
             label: 'Day Time Temperature',
             data: await getDailyTemperatures(),
